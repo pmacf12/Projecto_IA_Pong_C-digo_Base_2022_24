@@ -13,6 +13,6 @@ public interface GameController {
 	 * played.
 	 */
 
-	public int nextMove(int[] currentState);
+	public int nextMove(double[] currentState);
 
 }

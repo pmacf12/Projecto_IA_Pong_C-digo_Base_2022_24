@@ -34,6 +34,7 @@ public class BreakoutBoard extends JPanel {
 	private boolean inGame = true;
 
 	private GameController controller;
+	private PredictNextMove predictor;
 	private boolean withGui;
 	private Random r = new Random();
 	private double time;
@@ -56,6 +57,7 @@ public class BreakoutBoard extends JPanel {
 	 */
 	public BreakoutBoard(GameController controller, boolean withGui, int seed) {
 		this.controller = controller;
+		this.predictor = (PredictNextMove) controller;
 		this.withGui = withGui;
 		r.setSeed(seed);
 
@@ -110,8 +112,8 @@ public class BreakoutBoard extends JPanel {
 		return kills * 100000 + 100000 - time;
 	}
 
-	private int[] getState() {
-		int[] state = new int[Commons.BREAKOUT_STATE_SIZE];
+	private double[] getState() {
+		double[] state = new double[Commons.BREAKOUT_STATE_SIZE];
 
 		state[0] = ball.getX();
 		state[1] = ball.getY();
@@ -263,4 +265,13 @@ public class BreakoutBoard extends JPanel {
 			}
 		}
 	}
+
+	public BreakoutBoard mutate() {
+		return this;
+	}
+
+	public PredictNextMove getPredictor() {
+		return predictor;
+	}
+
 }

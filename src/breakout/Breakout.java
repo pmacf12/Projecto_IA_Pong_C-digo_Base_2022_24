@@ -2,6 +2,7 @@ package breakout;
 
 import javax.swing.JFrame;
 
+import utils.Commons;
 import utils.GameController;
 
 public class Breakout extends JFrame {
@@ -19,4 +20,11 @@ public class Breakout extends JFrame {
 		setVisible(true);
 	}
 
+
+
+	public static void main(String[] args) {
+		Genetic genetic = new Genetic();
+		genetic.start();
+	}
 }
+   
