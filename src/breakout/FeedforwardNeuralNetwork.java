@@ -141,7 +141,7 @@ public class FeedforwardNeuralNetwork {
 		double[] resultsOutput = extractValues(hiddenDim, outputDim, outputHidden, outputWeights);
 		for(int nn = 0; nn < results.length; nn++) {
 			double resultOutput = resultsOutput[nn] + outputBiases[nn];
-			results[nn] =  (sigmoid(resultOutput));
+			results[nn] = (sigmoid(resultOutput));
 		}
 		
 		return results;

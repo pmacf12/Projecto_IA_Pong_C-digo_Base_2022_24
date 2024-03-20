@@ -25,8 +25,8 @@ public class Breakout extends JFrame {
 
 
 	public static void main(String[] args) throws IOException {
-		Breakout breakout = new Breakout(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), 3);
-		//Genetic genetic = new Genetic();
-		//genetic.start();
+		//Breakout breakout = new Breakout(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), 3);
+		Genetic genetic = new Genetic();
+		genetic.start();
 	}
 }
