@@ -55,8 +55,8 @@ public class Genetic {
 		ArrayList<Double> weightsOne = parentOne.getPredictor().getNetwork().getWeights();
 		ArrayList<Double> weightsTwo = parentTwo.getPredictor().getNetwork().getWeights();
 
-		ArrayList<Double> childrenWeightsOne = new ArrayList<>(length);
-		ArrayList<Double> childrenWeightsTwo = new ArrayList<>(length);
+		ArrayList<Double> childrenWeightsOne = new ArrayList<>();
+		ArrayList<Double> childrenWeightsTwo = new ArrayList<>();
 		
 		for (int ii = 0; ii <= crosspoint; ii++) {
 			childrenWeightsOne.add(weightsOne.get(ii));
@@ -133,7 +133,7 @@ public class Genetic {
 	}
 	
 	public void write(BreakoutBoard breakoutBoard) throws IOException {
-		FileWriter writer = new FileWriter(new File("fitness.txt"));
+		FileWriter writer = new FileWriter(new File("fitness.txt"), true);
 		writer.write("Weights: " + breakoutBoard.getPredictor().getNetwork().getWeights() + "\nFitness: " + breakoutBoard.getFitness() + "\n");
 		writer.close();
 	}
