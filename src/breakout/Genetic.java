@@ -102,7 +102,7 @@ public class Genetic {
 			System.err.println("Geração " + generation);
             Genetic newPopulation = new Genetic();
 
-            for (int index = 0; index < (int) Genetic.DIMPOPULATION * 0.2; index++) {
+            for (int index = 0; index < (int) DIMPOPULATION * 0.2; index++) {
                 BreakoutBoard parentOne = this.tournamentSelection(2);
                 BreakoutBoard parentTwo = this.tournamentSelection(2);
                 ArrayList<BreakoutBoard> children = newPopulation.crossover(parentOne, parentTwo);
@@ -111,11 +111,11 @@ public class Genetic {
             }
 			
 			//Mutation
-            for (int index = 0; index < (int) Genetic.DIMPOPULATION * 0.8; index++) {
+            for (int index = 0; index < (int) DIMPOPULATION * 0.8; index++) {
                 if (Math.random() <= 0.05) {
 					ArrayList<Double> weights = this.getPopulation().get(index).getPredictor().getNetwork().getWeights();
 					int length = this.getPopulation().get(index).getPredictor().getNetwork().getWeightsLength();
-					int position = (int) Math.random() * length; 
+					int position = (int) (Math.random() * length); 
 					weights.set(position, Math.random());
 					BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM,Commons.BREAKOUT_NUM_ACTIONS, weights)), false, 1);
                     newPopulation.getPopulation().add(breakoutBoard);
