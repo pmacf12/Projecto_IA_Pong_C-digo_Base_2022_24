@@ -1,5 +1,7 @@
 package breakout;
 
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 import utils.Commons;
@@ -22,7 +24,7 @@ public class Breakout extends JFrame {
 
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Genetic genetic = new Genetic();
 		genetic.start();
 	}

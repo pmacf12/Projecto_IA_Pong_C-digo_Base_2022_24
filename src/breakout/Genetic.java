@@ -1,8 +1,10 @@
 package breakout;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.CookieHandler;
 import java.util.ArrayList;
 
 import utils.Commons;
@@ -25,18 +27,13 @@ public class Genetic {
 	}
 	
 	public void initPopulation() {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter("fitness.txt"))) {
         for (int pp = 0; pp < DIMPOPULATION; pp++) {
             BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove
             (new FeedforwardNeuralNetwork
             (Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false, 1);
             population.add(breakoutBoard);
             breakoutBoard.runSimulation();
-            writer.write("Weights: " + breakoutBoard.getPredictor().getNetwork().getWeights() + "\nFitness: " + breakoutBoard.getFitness() + "\n");
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
 }
 	public BreakoutBoard tournamentSelection(int tournamentSize) {
 	    BreakoutBoard bestCandidate = null;
@@ -49,7 +46,7 @@ public class Genetic {
 	    return bestCandidate;
 	}
 
-	public ArrayList<BreakoutBoard> crossover(BreakoutBoard parentOne, BreakoutBoard parentTwo) {
+	public ArrayList<BreakoutBoard> crossover(BreakoutBoard parentOne, BreakoutBoard parentTwo) throws IOException {
 		int length = parentOne.getPredictor().getNetwork().getWeightsLength();
 		int crosspoint = (int) (Math.random() * length);
 
@@ -66,7 +63,6 @@ public class Genetic {
 			childrenWeightsTwo.add(weightsTwo.get(ii));
 		}
 		
-		// Copie os elementos após o ponto de corte (crosspoint)
 		for (int jj = crosspoint + 1; jj < length; jj++) {
 			childrenWeightsOne.add(weightsTwo.get(jj));
 			childrenWeightsTwo.add(weightsOne.get(jj));
@@ -78,12 +74,14 @@ public class Genetic {
 								(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsOne)), false, 1);
 		childOne.runSimulation();
 		children.add(childOne);
+		write(childOne);
 		BreakoutBoard childTwo = new BreakoutBoard
 								(new PredictNextMove
 								(new FeedforwardNeuralNetwork
 								(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsTwo)), false, 1);						
 		childTwo.runSimulation();
 		children.add(childTwo);
+		write(childTwo);
 		return children;
 	}
 	
@@ -95,7 +93,7 @@ public class Genetic {
 		return false;
 	}
 
-	public void start(){
+	public void start() throws IOException{
         this.initPopulation();
         double best_fitness = 0;
         BreakoutBoard best_individual;
@@ -111,10 +109,18 @@ public class Genetic {
                 newPopulation.getPopulation().add(children.get(0));
 				newPopulation.getPopulation().add(children.get(1));
             }
-			 
+			
+			//Mutation
             for (int index = 0; index < (int) Genetic.DIMPOPULATION * 0.8; index++) {
                 if (Math.random() <= 0.05) {
-                    newPopulation.getPopulation().add(this.getPopulation().get(index).mutate());
+					ArrayList<Double> weights = this.getPopulation().get(index).getPredictor().getNetwork().getWeights();
+					int length = this.getPopulation().get(index).getPredictor().getNetwork().getWeightsLength();
+					int position = (int) Math.random() * length; 
+					weights.set(position, Math.random());
+					BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM,Commons.BREAKOUT_NUM_ACTIONS, weights)), false, 1);
+                    newPopulation.getPopulation().add(breakoutBoard);
+					breakoutBoard.runSimulation();
+					write(breakoutBoard);
                 } else {
                     newPopulation.getPopulation().add(this.getPopulation().get(index));
                 }
@@ -125,7 +131,11 @@ public class Genetic {
 		
         
 	}
-
-
+	
+	public void write(BreakoutBoard breakoutBoard) throws IOException {
+		FileWriter writer = new FileWriter(new File("fitness.txt"));
+		writer.write("Weights: " + breakoutBoard.getPredictor().getNetwork().getWeights() + "\nFitness: " + breakoutBoard.getFitness() + "\n");
+		writer.close();
+	}
 	
 }

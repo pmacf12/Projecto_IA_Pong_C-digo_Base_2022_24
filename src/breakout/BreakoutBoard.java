@@ -267,15 +267,7 @@ public class BreakoutBoard extends JPanel {
 		}
 	}
 
-	public BreakoutBoard mutate() {
-		int length = predictor.getNetwork().getWeightsLength();
-		ArrayList<Double>weights = predictor.getNetwork().getWeights();
-		int index = (int) Math.random() * length;
-		weights.set(index, Math.random());
-		predictor.getNetwork().putValues(weights);
-	
-		return this;
-	}
+
 
 	public PredictNextMove getPredictor() {
 		return predictor;
