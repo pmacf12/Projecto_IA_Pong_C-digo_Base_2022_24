@@ -51,17 +51,20 @@ public class Genetic {
 		ArrayList<Double> weightsOne = parentOne.getPredictor().getNetwork().getWeights();
 		ArrayList<Double> weightsTwo = parentTwo.getPredictor().getNetwork().getWeights();
 
-		double[] childrenWeightsOne = new double[length];
-		double[] childrenWeightsTwo = new double[length];
+		ArrayList<Double> childrenWeightsOne = new ArrayList<>(length);
+		ArrayList<Double> childrenWeightsTwo = new ArrayList<>(length);
 		
-		for(int ii = 0; ii <= crosspoint; ii++){
-			childrenWeightsOne[ii] = weightsOne.get(ii);
-			childrenWeightsTwo[ii] = weightsTwo.get(ii);
+		for (int ii = 0; ii <= crosspoint; ii++) {
+			childrenWeightsOne.add(weightsOne.get(ii));
+			childrenWeightsTwo.add(weightsTwo.get(ii));
 		}
-		for(int jj = crosspoint; jj < length; jj++) { 
-			childrenWeightsOne[jj] = weightsTwo.get(jj);
-			childrenWeightsTwo[jj] = weightsOne.get(jj);
+		
+		// Copie os elementos após o ponto de corte (crosspoint)
+		for (int jj = crosspoint + 1; jj < length; jj++) {
+			childrenWeightsOne.add(weightsTwo.get(jj));
+			childrenWeightsTwo.add(weightsOne.get(jj));
 		}
+
 		BreakoutBoard childOne = new BreakoutBoard
 								(new PredictNextMove
 								(new FeedforwardNeuralNetwork
@@ -101,7 +104,7 @@ public class Genetic {
                 newPopulation.getPopulation().add(children.get(0));
 				newPopulation.getPopulation().add(children.get(1));
             }
-			/* 
+			 
             for (int index = 0; index < (int) Genetic.DIMPOPULATION * 0.8; index++) {
                 if (Math.random() <= 0.05) {
                     newPopulation.getPopulation().add(this.getPopulation().get(index).mutate());
@@ -110,7 +113,7 @@ public class Genetic {
                 }
             }
             this.setPopulation(newPopulation.getPopulation());
-			*/
+			
         }
 		
         

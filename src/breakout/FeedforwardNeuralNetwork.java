@@ -24,7 +24,7 @@ public class FeedforwardNeuralNetwork {
 		initializeParameters();
 	}
 	
-	public FeedforwardNeuralNetwork(int inputDim, int hiddenDim, int outputDim, double[] values) {
+	public FeedforwardNeuralNetwork(int inputDim, int hiddenDim, int outputDim, ArrayList<Double> values) {
 		this.inputDim = inputDim;
 		this.hiddenDim = hiddenDim;
 		this.outputDim = outputDim;
@@ -71,32 +71,38 @@ public class FeedforwardNeuralNetwork {
 		return weights.size();
 	}
 
-	public void putValues(double[] values) {
+	public void putValues(ArrayList<Double> values) {
 		int count = 0;
+	
+		// Preenchendo os pesos da camada oculta
 		for(int rh = 0; rh < hiddenWeights.length; rh++) {
 			for(int ch = 0; ch < hiddenWeights[rh].length; ch ++) {
-				hiddenWeights[rh][ch] = values[count];
+				hiddenWeights[rh][ch] = values.get(count);
 				count++;
-				
 			}
-		}
-		for(int hb = 0; hb < hiddenBiases.length; hb ++) {
-			hiddenBiases[hb] = values[count];
-			count++;
-			
 		}
 	
+		// Preenchendo os vieses da camada oculta
+		for(int hb = 0; hb < hiddenBiases.length; hb ++) {
+			hiddenBiases[hb] = values.get(count);
+			count++;
+		}
+	
+		// Preenchendo os pesos da camada de saída
 		for(int rh = 0; rh < outputWeights.length; rh++) {
 			for(int ch = 0; ch < outputWeights[rh].length; ch ++) {
-				outputWeights[rh][ch] = values[count];
+				outputWeights[rh][ch] = values.get(count);
 				count++;
 			}
 		}
+	
+		// Preenchendo os vieses da camada de saída
 		for(int hb = 0; hb < outputBiases.length; hb ++) {
-			outputBiases[hb] = values[count];
+			outputBiases[hb] = values.get(count);
 			count++;
 		}
 	}
+	
 	public double[] extractValues(int inputDim, int outputDim, double inputValues[] ,double[][] weights) {
 		//Extração de valores para arraylist
 		ArrayList<double[]> xValues = new ArrayList<double[]>();
@@ -143,6 +149,10 @@ public class FeedforwardNeuralNetwork {
 	public double sigmoid(double value) {
 		return 1 / (1 + Math.exp(-value));
 	}
+
+	
+
+
 	@Override
 	public String toString() {
 		String result = "Neural Network: \nNumber of inputs: " + inputDim + "\n"
@@ -173,5 +183,6 @@ public class FeedforwardNeuralNetwork {
 		result += biasOutput;
 		return result;
 	}
+
 
 }

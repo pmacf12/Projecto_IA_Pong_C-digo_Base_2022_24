@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -267,6 +268,12 @@ public class BreakoutBoard extends JPanel {
 	}
 
 	public BreakoutBoard mutate() {
+		int length = predictor.getNetwork().getWeightsLength();
+		ArrayList<Double>weights = predictor.getNetwork().getWeights();
+		int index = (int) Math.random() * length;
+		weights.set(index, Math.random());
+		predictor.getNetwork().putValues(weights);
+	
 		return this;
 	}
 
