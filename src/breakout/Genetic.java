@@ -1,5 +1,8 @@
 package breakout;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import utils.Commons;
@@ -22,15 +25,19 @@ public class Genetic {
 	}
 	
 	public void initPopulation() {
-		for(int pp = 0; pp < DIMPOPULATION; pp++) {
-			BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove
-			(new FeedforwardNeuralNetwork
-			(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false,1);
-			population.add(breakoutBoard);
-			breakoutBoard.runSimulation();
-		}
-	}
-	
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("fitness.txt"))) {
+        for (int pp = 0; pp < DIMPOPULATION; pp++) {
+            BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove
+            (new FeedforwardNeuralNetwork
+            (Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false, 1);
+            population.add(breakoutBoard);
+            breakoutBoard.runSimulation();
+            writer.write("Weights: " + breakoutBoard.getPredictor().getNetwork().getWeights() + "\nFitness: " + breakoutBoard.getFitness() + "\n");
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 	public BreakoutBoard tournamentSelection(int tournamentSize) {
 	    BreakoutBoard bestCandidate = null;
 	    for (int i = 0; i < tournamentSize; i++) {
