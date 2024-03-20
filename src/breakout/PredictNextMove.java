@@ -13,7 +13,8 @@ public class PredictNextMove implements GameController{
     public int nextMove(double[] currentState) {
         double[] outputs = this.network.forward(currentState);
         //Ver quando outputs sao iguais
-        if(outputs[0] >= outputs[1]) {
+        System.out.println(outputs[0] +"\n" + outputs[1]);
+        if(outputs[0] <= outputs[1]) {
             return 1;
         } else{
             return 2;

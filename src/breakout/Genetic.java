@@ -1,18 +1,17 @@
 package breakout;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.CookieHandler;
 import java.util.ArrayList;
 
 import utils.Commons;
 
 public class Genetic {
 	private ArrayList<BreakoutBoard> population;
-	public static final int DIMPOPULATION = 5;
-    private static final int GENERATIONS = 10;
+	public static final int DIMPOPULATION = 100;
+    private static final int GENERATIONS = 1000;
+	private static final int MUTATIONS = 100;
 
 	public Genetic() {
 		this.population = new ArrayList<>();
@@ -30,7 +29,7 @@ public class Genetic {
         for (int pp = 0; pp < DIMPOPULATION; pp++) {
             BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove
             (new FeedforwardNeuralNetwork
-            (Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false, 1);
+            (Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false, 3);
             population.add(breakoutBoard);
             breakoutBoard.runSimulation();
         }
@@ -46,7 +45,7 @@ public class Genetic {
 	    return bestCandidate;
 	}
 
-	public ArrayList<BreakoutBoard> crossover(BreakoutBoard parentOne, BreakoutBoard parentTwo) throws IOException {
+	public ArrayList<BreakoutBoard> crossover(BreakoutBoard parentOne, BreakoutBoard parentTwo, int generation) throws IOException {
 		int length = parentOne.getPredictor().getNetwork().getWeightsLength();
 		int crosspoint = (int) (Math.random() * length);
 
@@ -71,17 +70,17 @@ public class Genetic {
 		BreakoutBoard childOne = new BreakoutBoard
 								(new PredictNextMove
 								(new FeedforwardNeuralNetwork
-								(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsOne)), false, 1);
+								(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsOne)), false, 3);
 		childOne.runSimulation();
 		children.add(childOne);
-		write(childOne);
+		write(childOne, generation);
 		BreakoutBoard childTwo = new BreakoutBoard
 								(new PredictNextMove
 								(new FeedforwardNeuralNetwork
-								(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsTwo)), false, 1);						
+								(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsTwo)), false, 3);						
 		childTwo.runSimulation();
 		children.add(childTwo);
-		write(childTwo);
+		write(childTwo, generation);
 		return children;
 	}
 	
@@ -94,33 +93,37 @@ public class Genetic {
 	}
 
 	public void start() throws IOException{
+		File fitness = new File("fitness.txt");
+		fitness.delete();
+		fitness.createNewFile();
         this.initPopulation();
         double best_fitness = 0;
         BreakoutBoard best_individual;
         
         for (int generation = 0; generation <  GENERATIONS; generation++) {
-			System.err.println("Geração " + generation);
             Genetic newPopulation = new Genetic();
 
             for (int index = 0; index < (int) DIMPOPULATION * 0.2; index++) {
                 BreakoutBoard parentOne = this.tournamentSelection(2);
                 BreakoutBoard parentTwo = this.tournamentSelection(2);
-                ArrayList<BreakoutBoard> children = newPopulation.crossover(parentOne, parentTwo);
+                ArrayList<BreakoutBoard> children = newPopulation.crossover(parentOne, parentTwo, generation);
                 newPopulation.getPopulation().add(children.get(0));
 				newPopulation.getPopulation().add(children.get(1));
             }
 			
 			//Mutation
             for (int index = 0; index < (int) DIMPOPULATION * 0.8; index++) {
-                if (Math.random() <= 0.05) {
+                if (Math.random() <= 0.2) {
 					ArrayList<Double> weights = this.getPopulation().get(index).getPredictor().getNetwork().getWeights();
 					int length = this.getPopulation().get(index).getPredictor().getNetwork().getWeightsLength();
-					int position = (int) (Math.random() * length); 
-					weights.set(position, Math.random());
-					BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM,Commons.BREAKOUT_NUM_ACTIONS, weights)), false, 1);
+					for(int mutate = 0; mutate < MUTATIONS; mutate++){
+						int position = (int) (Math.random() * length); 
+						weights.set(position, Math.random());
+					}
+					BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM,Commons.BREAKOUT_NUM_ACTIONS, weights)), false, 3);
                     newPopulation.getPopulation().add(breakoutBoard);
 					breakoutBoard.runSimulation();
-					write(breakoutBoard);
+					write(breakoutBoard, generation);
                 } else {
                     newPopulation.getPopulation().add(this.getPopulation().get(index));
                 }
@@ -132,9 +135,9 @@ public class Genetic {
         
 	}
 	
-	public void write(BreakoutBoard breakoutBoard) throws IOException {
+	public void write(BreakoutBoard breakoutBoard, int generation) throws IOException {
 		FileWriter writer = new FileWriter(new File("fitness.txt"), true);
-		writer.write("Weights: " + breakoutBoard.getPredictor().getNetwork().getWeights() + "\nFitness: " + breakoutBoard.getFitness() + "\n");
+		writer.write("Generation: " + generation + "\nWeights: " + breakoutBoard.getPredictor().getNetwork().getWeights() + "\nFitness: " + breakoutBoard.getFitness() + "\n");
 		writer.close();
 	}
 	
