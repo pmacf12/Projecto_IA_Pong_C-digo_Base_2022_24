@@ -32,6 +32,7 @@ public class FeedforwardNeuralNetwork {
 		hiddenBiases = new double[hiddenDim];
 		outputWeights = new double[hiddenDim][outputDim];
 		outputBiases = new double[outputDim];
+		weights = new ArrayList<>();
 		putValues(values);
 	}
 	
@@ -74,31 +75,31 @@ public class FeedforwardNeuralNetwork {
 	public void putValues(ArrayList<Double> values) {
 		int count = 0;
 	
-		// Preenchendo os pesos da camada oculta
 		for(int rh = 0; rh < hiddenWeights.length; rh++) {
 			for(int ch = 0; ch < hiddenWeights[rh].length; ch ++) {
 				hiddenWeights[rh][ch] = values.get(count);
+				weights.add(values.get(count)); 
 				count++;
 			}
 		}
-	
-		// Preenchendo os vieses da camada oculta
+		
 		for(int hb = 0; hb < hiddenBiases.length; hb ++) {
 			hiddenBiases[hb] = values.get(count);
+			weights.add(values.get(count));
 			count++;
 		}
-	
-		// Preenchendo os pesos da camada de saída
+		
 		for(int rh = 0; rh < outputWeights.length; rh++) {
 			for(int ch = 0; ch < outputWeights[rh].length; ch ++) {
 				outputWeights[rh][ch] = values.get(count);
+				weights.add(values.get(count)); 
 				count++;
 			}
 		}
-	
-		// Preenchendo os vieses da camada de saída
+		
 		for(int hb = 0; hb < outputBiases.length; hb ++) {
 			outputBiases[hb] = values.get(count);
+			weights.add(values.get(count)); 
 			count++;
 		}
 	}
