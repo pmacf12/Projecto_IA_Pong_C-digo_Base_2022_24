@@ -143,12 +143,11 @@ public class FeedforwardNeuralNetwork {
 			double resultOutput = resultsOutput[nn] + outputBiases[nn];
 			results[nn] = (sigmoid(resultOutput));
 		}
-		
 		return results;
 	}
 	
 	public double sigmoid(double value) {
-		return 1 / (1 + Math.exp(-value));
+		return value;
 	}
 
 	

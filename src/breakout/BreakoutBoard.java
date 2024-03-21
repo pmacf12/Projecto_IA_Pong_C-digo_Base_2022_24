@@ -40,6 +40,8 @@ public class BreakoutBoard extends JPanel {
 	private Random r = new Random();
 	private double time;
 	private int kills;
+	private int moves;
+
 
 	public BreakoutBoard() {
 		this.withGui = true;
@@ -75,6 +77,7 @@ public class BreakoutBoard extends JPanel {
 
 	public void makeMove(int move) {
 		paddle.makeMove(move);
+		moves++;
 	}
 
 	private void gameInit() {
