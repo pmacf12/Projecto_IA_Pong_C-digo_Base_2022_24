@@ -119,7 +119,6 @@ public class Genetic {
         BreakoutBoard best_individual;
         
         for (int generation = 0; generation <  GENERATIONS; generation++) {
-<<<<<<< HEAD
             ArrayList<BreakoutBoard> newPopulation = new ArrayList<>();
             for (int index = 0; index < (int) DIMPOPULATION * 0.25; index++) {
                 BreakoutBoard parentOne = tournamentSelection(2);
@@ -129,33 +128,15 @@ public class Genetic {
 				newPopulation.add(parentTwo);
 				
                 if (Math.random() <=  0.20)
-=======
-           ArrayList<BreakoutBoard> newPopulation = new ArrayList<>();
-            for (int index = 0; index < (int) DIMPOPULATION * 0.20; index++) {
-                BreakoutBoard parentOne = tournamentSelection(2);
-                BreakoutBoard parentTwo = tournamentSelection(2);
-                ArrayList<BreakoutBoard> children = uniformCrossover(parentOne, parentTwo, generation);
-				
-			
-                if (Math.random() <=  0.05)
->>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 					newPopulation.add(mutate(children.get(0), generation));
                  else 
                     newPopulation.add(children.get(0));
                 
-<<<<<<< HEAD
 				if (Math.random() <=  0.20) 
 					newPopulation.add(mutate(children.get(1), generation));
                  else 
                     newPopulation.add(children.get(1));
 				
-=======
-				if (Math.random() <=  0.05) 
-					newPopulation.add(mutate(children.get(1), generation));
-                 else 
-                    newPopulation.add(children.get(1));
-                
->>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 				
             }
 			setPopulation(newPopulation);

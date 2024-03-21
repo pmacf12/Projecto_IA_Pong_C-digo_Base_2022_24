@@ -160,11 +160,7 @@ public class FeedforwardNeuralNetwork {
 
         double[] normalizedState = new double[state.length];
         for (int i = 0; i < state.length; i++) {
-<<<<<<< HEAD
             normalizedState[i] = (((state[i] - min) / (max - min)) * 2) - 1;
-=======
-            normalizedState[i] = ((state[i] - min) / (max - min)) * (1 - (-1)) + -1;
->>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
         }
 		return normalizedState;
 	}
