@@ -25,8 +25,15 @@ public class Breakout extends JFrame {
 
 	public static void test() {
 		ArrayList<Double> valuesarray = new ArrayList<>();
+<<<<<<< HEAD
 		
 		Breakout breakout = new Breakout(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), 3);
+=======
+		for(int i = 0; i < values.length; i++) {
+			valuesarray.add(values[i]);
+		}
+		Breakout breakout = new Breakout(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, valuesarray)), 1);
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 	}
 
 	public static void main(String[] args) throws IOException {

@@ -42,25 +42,41 @@ public class FeedforwardNeuralNetwork {
 		Random random = new Random();
 		for(int rh = 0; rh < hiddenWeights.length; rh++) {
 			for(int ch = 0; ch < hiddenWeights[rh].length; ch ++) {
+<<<<<<< HEAD
 				double valor = random.nextDouble() * 2 - 1;
+=======
+				double valor = -1 + (2) * random.nextDouble();
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 				hiddenWeights[rh][ch] = valor;
 				weights.add(valor);
 			}
 		}
 		for(int hb = 0; hb < hiddenBiases.length; hb ++){
+<<<<<<< HEAD
 			double valor = random.nextDouble() * 2 - 1;
+=======
+			double valor = -1 + (2) * random.nextDouble();
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 			hiddenBiases[hb] = valor;
 			weights.add(valor);
 		}
 		for(int rh = 0; rh < outputWeights.length; rh++) {
 			for(int ch = 0; ch < outputWeights[rh].length; ch ++) {
+<<<<<<< HEAD
 				double valor = random.nextDouble() * 2 - 1;
+=======
+				double valor = -1 + (2) * random.nextDouble();
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 				outputWeights[rh][ch] = valor;
 				weights.add(valor);
 			}
 		}
 		for(int hb = 0; hb < outputBiases.length; hb ++){
+<<<<<<< HEAD
 			double valor = random.nextDouble() * 2 - 1;
+=======
+			double valor = -1 + (2) * random.nextDouble();
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 			outputBiases[hb] = valor;
 			weights.add(valor);
 		}
@@ -144,7 +160,11 @@ public class FeedforwardNeuralNetwork {
 
         double[] normalizedState = new double[state.length];
         for (int i = 0; i < state.length; i++) {
+<<<<<<< HEAD
             normalizedState[i] = (((state[i] - min) / (max - min)) * 2) - 1;
+=======
+            normalizedState[i] = ((state[i] - min) / (max - min)) * (1 - (-1)) + -1;
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
         }
 		return normalizedState;
 	}

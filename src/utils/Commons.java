@@ -20,6 +20,10 @@ public interface Commons {
 	public static final int PACMAN_NUM_ACTIONS = 4;
 	public static final int PACMAN_STATE_SIZE = PacmanBoard.N_BLOCKS * PacmanBoard.N_BLOCKS * 2 + 2 + PacmanBoard.MAX_GHOSTS * 2;
 
+<<<<<<< HEAD
 	public static final int BREAKOUT_HIDDEN_DIM = 14;
+=======
+	public static final int BREAKOUT_HIDDEN_DIM = 20;
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 
 }

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
+
 import utils.Commons;
 
 public class Genetic {
@@ -26,16 +28,21 @@ public class Genetic {
 	
 	public void initPopulation() {
         for (int pp = 0; pp < DIMPOPULATION; pp++) {
+<<<<<<< HEAD
             BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), true, 3);
+=======
+            BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false, 1);
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
             population.add(breakoutBoard);
             breakoutBoard.runSimulation();
         }
 }
 	public BreakoutBoard tournamentSelection(int tournamentSize) {
 	    BreakoutBoard bestCandidate = null;
+		Random random = new Random();
 	    for (int i = 0; i < tournamentSize; i++) {
-	        int random = (int) (Math.random() * population.size());
-	        BreakoutBoard candidate = population.get(random);
+	        int index = (int) (random.nextInt(population.size()));
+	        BreakoutBoard candidate = population.get(index);
 	        if (bestCandidate == null || candidate.getFitness() > bestCandidate.getFitness()) 
 	            bestCandidate = candidate;   
 	    }
@@ -73,11 +80,11 @@ public class Genetic {
 			}
 		}
 
-		BreakoutBoard childOne = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsOne)), false, 3);
+		BreakoutBoard childOne = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsOne)), false, 1);
 		childOne.runSimulation();
 		write(childOne, generation);
 		
-		BreakoutBoard childTwo = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsTwo)), false, 3);                        
+		BreakoutBoard childTwo = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsTwo)), false, 1);                        
 		childTwo.runSimulation();
 		write(childTwo, generation);
 	
@@ -91,11 +98,12 @@ public class Genetic {
 	public BreakoutBoard mutate(BreakoutBoard inputBoard, int generation) throws IOException {
 		ArrayList<Double> weights = inputBoard.getPredictor().getNetwork().getWeights();
 		int length = inputBoard.getPredictor().getNetwork().getWeightsLength();
+		Random random = new Random();
 		for(int mutate = 0; mutate < MUTATIONS; mutate++){
-			int position = (int) (Math.random() * length); 
+			int position = (int) (random.nextInt(length)); 
 			weights.set(position, Math.random());
 		}
-		BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM,Commons.BREAKOUT_NUM_ACTIONS, weights)), false, 3);
+		BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM,Commons.BREAKOUT_NUM_ACTIONS, weights)), false, 1);
 		breakoutBoard.runSimulation();
 		write(breakoutBoard, generation);
 		return breakoutBoard;
@@ -111,6 +119,7 @@ public class Genetic {
         BreakoutBoard best_individual;
         
         for (int generation = 0; generation <  GENERATIONS; generation++) {
+<<<<<<< HEAD
             ArrayList<BreakoutBoard> newPopulation = new ArrayList<>();
             for (int index = 0; index < (int) DIMPOPULATION * 0.25; index++) {
                 BreakoutBoard parentOne = tournamentSelection(2);
@@ -120,15 +129,33 @@ public class Genetic {
 				newPopulation.add(parentTwo);
 				
                 if (Math.random() <=  0.20)
+=======
+           ArrayList<BreakoutBoard> newPopulation = new ArrayList<>();
+            for (int index = 0; index < (int) DIMPOPULATION * 0.20; index++) {
+                BreakoutBoard parentOne = tournamentSelection(2);
+                BreakoutBoard parentTwo = tournamentSelection(2);
+                ArrayList<BreakoutBoard> children = uniformCrossover(parentOne, parentTwo, generation);
+				
+			
+                if (Math.random() <=  0.05)
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 					newPopulation.add(mutate(children.get(0), generation));
                  else 
                     newPopulation.add(children.get(0));
                 
+<<<<<<< HEAD
 				if (Math.random() <=  0.20) 
 					newPopulation.add(mutate(children.get(1), generation));
                  else 
                     newPopulation.add(children.get(1));
 				
+=======
+				if (Math.random() <=  0.05) 
+					newPopulation.add(mutate(children.get(1), generation));
+                 else 
+                    newPopulation.add(children.get(1));
+                
+>>>>>>> 3132932efb4bda8484cc53421771065cdc1fd532
 				
             }
 			setPopulation(newPopulation);
