@@ -122,7 +122,7 @@ public class Genetic {
 	
 	public void write(BreakoutBoard breakoutBoard, int generation) throws IOException {
 		FileWriter writer = new FileWriter(new File("fitness.txt"), true);
-		writer.write("Generation: " + generation + "\nWeights: " + breakoutBoard.getPredictor().getNetwork().getWeights() + "\nFitness: " + breakoutBoard.getFitness() + "\n");
+		writer.write("Generation: " + generation + "\ndouble[] values = {" + breakoutBoard.getPredictor().getNetwork().getWeights() + "};\nFitness: " + breakoutBoard.getFitness() + "\n");
 		writer.close();
 	}
 	

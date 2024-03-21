@@ -14,7 +14,7 @@ public interface Commons {
 	public static final int INIT_BALL_Y = 355;    
 	public static final int PERIOD = 5;
     
-	public static final int BREAKOUT_STATE_SIZE = 7;
+	public static final int BREAKOUT_STATE_SIZE = 8;
 	public static final int BREAKOUT_NUM_ACTIONS = 2;
 	
 	public static final int PACMAN_NUM_ACTIONS = 4;
