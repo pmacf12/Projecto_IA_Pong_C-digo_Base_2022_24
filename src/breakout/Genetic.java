@@ -26,7 +26,7 @@ public class Genetic {
 	
 	public void initPopulation() {
         for (int pp = 0; pp < DIMPOPULATION; pp++) {
-            BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false, 3);
+            BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), true, 3);
             population.add(breakoutBoard);
             breakoutBoard.runSimulation();
         }
@@ -111,27 +111,27 @@ public class Genetic {
         BreakoutBoard best_individual;
         
         for (int generation = 0; generation <  GENERATIONS; generation++) {
-            Genetic newPopulation = new Genetic();
+            ArrayList<BreakoutBoard> newPopulation = new ArrayList<>();
             for (int index = 0; index < (int) DIMPOPULATION * 0.25; index++) {
-                BreakoutBoard parentOne = tournamentSelection(15);
-                BreakoutBoard parentTwo = tournamentSelection(15);
-                ArrayList<BreakoutBoard> children = newPopulation.uniformCrossover(parentOne, parentTwo, generation);
-				newPopulation.getPopulation().add(parentOne);
-				newPopulation.getPopulation().add(parentTwo);
+                BreakoutBoard parentOne = tournamentSelection(2);
+                BreakoutBoard parentTwo = tournamentSelection(2);
+                ArrayList<BreakoutBoard> children = uniformCrossover(parentOne, parentTwo, generation);
+				newPopulation.add(parentOne);
+				newPopulation.add(parentTwo);
 				
-                if (Math.random() <= ((GENERATIONS - generation) / GENERATIONS) * 0.75)
-					newPopulation.getPopulation().add(mutate(children.get(0), generation));
+                if (Math.random() <=  0.20)
+					newPopulation.add(mutate(children.get(0), generation));
                  else 
-                    newPopulation.getPopulation().add(children.get(0));
+                    newPopulation.add(children.get(0));
                 
-				if (Math.random() <= ((GENERATIONS - generation) / GENERATIONS) * 0.75) 
-					newPopulation.getPopulation().add(mutate(children.get(1), generation));
+				if (Math.random() <=  0.20) 
+					newPopulation.add(mutate(children.get(1), generation));
                  else 
-                    newPopulation.getPopulation().add(children.get(1));
-                
+                    newPopulation.add(children.get(1));
+				
 				
             }
-			setPopulation(newPopulation.getPopulation());
+			setPopulation(newPopulation);
         }
 
         }

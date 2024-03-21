@@ -1,5 +1,6 @@
 package breakout;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class FeedforwardNeuralNetwork {
 	
@@ -38,27 +39,28 @@ public class FeedforwardNeuralNetwork {
 	
 	public void initializeParameters() {
 		weights = new ArrayList<>();
+		Random random = new Random();
 		for(int rh = 0; rh < hiddenWeights.length; rh++) {
 			for(int ch = 0; ch < hiddenWeights[rh].length; ch ++) {
-				double valor = Math.random();
+				double valor = random.nextDouble() * 2 - 1;
 				hiddenWeights[rh][ch] = valor;
 				weights.add(valor);
 			}
 		}
 		for(int hb = 0; hb < hiddenBiases.length; hb ++){
-			double valor = Math.random();
+			double valor = random.nextDouble() * 2 - 1;
 			hiddenBiases[hb] = valor;
 			weights.add(valor);
 		}
 		for(int rh = 0; rh < outputWeights.length; rh++) {
 			for(int ch = 0; ch < outputWeights[rh].length; ch ++) {
-				double valor = Math.random();
+				double valor = random.nextDouble() * 2 - 1;
 				outputWeights[rh][ch] = valor;
 				weights.add(valor);
 			}
 		}
 		for(int hb = 0; hb < outputBiases.length; hb ++){
-			double valor = Math.random();
+			double valor = random.nextDouble() * 2 - 1;
 			outputBiases[hb] = valor;
 			weights.add(valor);
 		}
@@ -142,27 +144,33 @@ public class FeedforwardNeuralNetwork {
 
         double[] normalizedState = new double[state.length];
         for (int i = 0; i < state.length; i++) {
-            normalizedState[i] = (state[i] - min) / (max - min);
+            normalizedState[i] = (((state[i] - min) / (max - min)) * 2) - 1;
         }
 		return normalizedState;
 	}
 
 	public double[] forward(double[] currentState) {
 
-		double[] normalized = normalize(currentState);
 		double[] results = new double[outputDim];
-		double[] resultsHidden = extractValues(inputDim, hiddenDim, normalized, hiddenWeights);
+		double[] resultsHidden = normalize(extractValues(inputDim, hiddenDim, currentState, hiddenWeights));
 		
-		double[] outputHidden = new double[hiddenDim];
 		for(int mm = 0; mm < hiddenDim; mm++) {
-			double result = resultsHidden[mm] + hiddenBiases[mm];
-			outputHidden[mm] = sigmoid(result);
+			resultsHidden[mm] += hiddenBiases[mm];
+		}
+		resultsHidden = normalize(resultsHidden);
+
+		double[] outputHidden = new double[hiddenDim];
+		for(int normalized = 0; normalized < hiddenDim; normalized++){
+			outputHidden[normalized] = sigmoid(resultsHidden[normalized]);
 		}
 		
 		double[] resultsOutput = extractValues(hiddenDim, outputDim, outputHidden, outputWeights);
 		for(int nn = 0; nn < results.length; nn++) {
-			double resultOutput = resultsOutput[nn] + outputBiases[nn];
-			results[nn] = (sigmoid(resultOutput));
+			resultsOutput[nn] += outputBiases[nn];
+		}
+
+		for(int normalized = 0; normalized < outputDim; normalized++){
+			results[normalized] = sigmoid(resultsOutput[normalized]);
 		}
 		return results;
 	}
