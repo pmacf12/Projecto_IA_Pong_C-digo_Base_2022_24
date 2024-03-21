@@ -121,8 +121,7 @@ public class BreakoutBoard extends JPanel {
 
 		state[0] = ball.getX();
 		state[1] = ball.getY();
-		state[2] = ball.getYDir()*100;
-		//state[3] = ball.getXDir()*100;
+		state[2] = ball.getYDir();
 
 		state[3] = paddle.getX();
 		state[4] = paddle.getY();
