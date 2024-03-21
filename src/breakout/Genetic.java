@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import utils.Commons;
 
 public class Genetic {
 	private ArrayList<BreakoutBoard> population;
 	public static final int DIMPOPULATION = 100;
     private static final int GENERATIONS = 1000;
-	private static final int MUTATIONS = 50;
+	private static final int MUTATIONS = 20;
 
 	public Genetic() {
 		this.population = new ArrayList<>();
@@ -43,6 +42,19 @@ public class Genetic {
 	    return bestCandidate;
 	}
 
+
+	//public ArrayList<BreakoutBoard> bestBreakoutBoard(ArrayList<BreakoutBoard> population) {
+	//	ArrayList<BreakoutBoard> bestCandidates = null;
+	//	BreakoutBoard atual = null;
+	//	for (int i = 0; i < population.size(); i++) {
+	//		atual = population.get(i);
+	//		if (atual.getFitness() > bestCandidates.get(0).getFitness()) {
+	//			bestCandidates.add(atual);
+	//		}
+	//	}
+	//	return bestCandidate;
+	//}
+
 	public ArrayList<BreakoutBoard> uniformCrossover(BreakoutBoard parentOne, BreakoutBoard parentTwo, int generation) throws IOException {
 		ArrayList<Double> weightsOne = parentOne.getPredictor().getNetwork().getWeights();
 		ArrayList<Double> weightsTwo = parentTwo.getPredictor().getNetwork().getWeights();
@@ -60,7 +72,7 @@ public class Genetic {
 				childrenWeightsTwo.add(weightsOne.get(i));
 			}
 		}
-	
+
 		BreakoutBoard childOne = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsOne)), false, 3);
 		childOne.runSimulation();
 		write(childOne, generation);
@@ -76,9 +88,9 @@ public class Genetic {
 	}
 	
 	
-	public BreakoutBoard mutate(int index, int generation) throws IOException {
-		ArrayList<Double> weights = this.getPopulation().get(index).getPredictor().getNetwork().getWeights();
-		int length = this.getPopulation().get(index).getPredictor().getNetwork().getWeightsLength();
+	public BreakoutBoard mutate(BreakoutBoard inputBoard, int generation) throws IOException {
+		ArrayList<Double> weights = inputBoard.getPredictor().getNetwork().getWeights();
+		int length = inputBoard.getPredictor().getNetwork().getWeightsLength();
 		for(int mutate = 0; mutate < MUTATIONS; mutate++){
 			int position = (int) (Math.random() * length); 
 			weights.set(position, Math.random());
@@ -100,29 +112,34 @@ public class Genetic {
         
         for (int generation = 0; generation <  GENERATIONS; generation++) {
             Genetic newPopulation = new Genetic();
-
-            for (int index = 0; index < (int) DIMPOPULATION * 0.2; index++) {
-                BreakoutBoard parentOne = tournamentSelection(10);
-                BreakoutBoard parentTwo = tournamentSelection(10);
+            for (int index = 0; index < (int) DIMPOPULATION * 0.25; index++) {
+                BreakoutBoard parentOne = tournamentSelection(15);
+                BreakoutBoard parentTwo = tournamentSelection(15);
                 ArrayList<BreakoutBoard> children = newPopulation.uniformCrossover(parentOne, parentTwo, generation);
-                newPopulation.getPopulation().add(children.get(0));
-				newPopulation.getPopulation().add(children.get(1));
+				newPopulation.getPopulation().add(parentOne);
+				newPopulation.getPopulation().add(parentTwo);
+				
+                if (Math.random() <= ((GENERATIONS - generation) / GENERATIONS) * 0.75)
+					newPopulation.getPopulation().add(mutate(children.get(0), generation));
+                 else 
+                    newPopulation.getPopulation().add(children.get(0));
+                
+				if (Math.random() <= ((GENERATIONS - generation) / GENERATIONS) * 0.75) 
+					newPopulation.getPopulation().add(mutate(children.get(1), generation));
+                 else 
+                    newPopulation.getPopulation().add(children.get(1));
+                
+				
             }
-			
-            for (int index = 0; index < (int) DIMPOPULATION * 0.8; index++) {
-                if (Math.random() <= ((GENERATIONS -generation) / GENERATIONS) * 0.75) {
-					newPopulation.getPopulation().add(mutate(index, generation));
-                } else {
-                    newPopulation.getPopulation().add(getPopulation().get(index));
-                }
-            }
-            setPopulation(newPopulation.getPopulation());
+			setPopulation(newPopulation.getPopulation());
         }
-	}
+
+        }
+	
 	
 	public void write(BreakoutBoard breakoutBoard, int generation) throws IOException {
 		FileWriter writer = new FileWriter(new File("fitness.txt"), true);
-		writer.write("Generation: " + generation + "\nWeights: " + breakoutBoard.getPredictor().getNetwork().getWeights() + "\nFitness: " + breakoutBoard.getFitness() + "\n");
+		writer.write("Generation: " + generation + "\ndouble[] values = {" + breakoutBoard.getPredictor().getNetwork().getWeights() + "};\nFitness: " + breakoutBoard.getFitness() + "\n");
 		writer.close();
 	}
 	

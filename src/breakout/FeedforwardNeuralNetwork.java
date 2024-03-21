@@ -128,9 +128,30 @@ public class FeedforwardNeuralNetwork {
 		return resultsHidden;
 	}
 	
+	public double[] normalize(double[] state) {
+		double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+        for (double value : state) {
+            if (value < min) {
+                min = value;
+            }
+            if (value > max) {
+                max = value;
+            }
+        }
+
+        double[] normalizedState = new double[state.length];
+        for (int i = 0; i < state.length; i++) {
+            normalizedState[i] = (state[i] - min) / (max - min);
+        }
+		return normalizedState;
+	}
+
 	public double[] forward(double[] currentState) {
+
+		double[] normalized = normalize(currentState);
 		double[] results = new double[outputDim];
-		double[] resultsHidden = extractValues(inputDim, hiddenDim, currentState, hiddenWeights);
+		double[] resultsHidden = extractValues(inputDim, hiddenDim, normalized, hiddenWeights);
 		
 		double[] outputHidden = new double[hiddenDim];
 		for(int mm = 0; mm < hiddenDim; mm++) {
@@ -147,11 +168,8 @@ public class FeedforwardNeuralNetwork {
 	}
 	
 	public double sigmoid(double value) {
-		return value;
+		return 1/(1+ Math.exp(-value));
 	}
-
-	
-
 
 	@Override
 	public String toString() {
