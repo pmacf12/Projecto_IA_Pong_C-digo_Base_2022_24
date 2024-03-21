@@ -1,5 +1,6 @@
 package breakout;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class FeedforwardNeuralNetwork {
 	
@@ -38,27 +39,28 @@ public class FeedforwardNeuralNetwork {
 	
 	public void initializeParameters() {
 		weights = new ArrayList<>();
+		Random random = new Random();
 		for(int rh = 0; rh < hiddenWeights.length; rh++) {
 			for(int ch = 0; ch < hiddenWeights[rh].length; ch ++) {
-				double valor = Math.random();
+				double valor = -1 + (2) * random.nextDouble();
 				hiddenWeights[rh][ch] = valor;
 				weights.add(valor);
 			}
 		}
 		for(int hb = 0; hb < hiddenBiases.length; hb ++){
-			double valor = Math.random();
+			double valor = -1 + (2) * random.nextDouble();
 			hiddenBiases[hb] = valor;
 			weights.add(valor);
 		}
 		for(int rh = 0; rh < outputWeights.length; rh++) {
 			for(int ch = 0; ch < outputWeights[rh].length; ch ++) {
-				double valor = Math.random();
+				double valor = -1 + (2) * random.nextDouble();
 				outputWeights[rh][ch] = valor;
 				weights.add(valor);
 			}
 		}
 		for(int hb = 0; hb < outputBiases.length; hb ++){
-			double valor = Math.random();
+			double valor = -1 + (2) * random.nextDouble();
 			outputBiases[hb] = valor;
 			weights.add(valor);
 		}
@@ -142,7 +144,7 @@ public class FeedforwardNeuralNetwork {
 
         double[] normalizedState = new double[state.length];
         for (int i = 0; i < state.length; i++) {
-            normalizedState[i] = (state[i] - min) / (max - min);
+            normalizedState[i] = ((state[i] - min) / (max - min)) * (1 - (-1)) + -1;
         }
 		return normalizedState;
 	}

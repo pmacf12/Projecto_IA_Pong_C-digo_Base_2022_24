@@ -28,7 +28,7 @@ public class Breakout extends JFrame {
 		for(int i = 0; i < values.length; i++) {
 			valuesarray.add(values[i]);
 		}
-		Breakout breakout = new Breakout(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, valuesarray)), 3);
+		Breakout breakout = new Breakout(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, valuesarray)), 1);
 	}
 
 	public static void main(String[] args) throws IOException {
