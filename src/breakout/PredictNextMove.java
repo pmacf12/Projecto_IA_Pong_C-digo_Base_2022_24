@@ -12,6 +12,7 @@ public class PredictNextMove implements GameController{
     @Override
     public int nextMove(double[] currentState) {
         double[] outputs = this.network.forward(currentState);
+        
         if(outputs[0] <= 0.5) {
             return 1;
         } else {
