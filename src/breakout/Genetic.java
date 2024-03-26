@@ -13,13 +13,14 @@ import utils.Commons;
 public class Genetic {
 	private ArrayList<BreakoutBoard> population;
 	public static final int DIMPOPULATION = 100;
-	private static final int GENERATIONS = 2000;
+	private static final int GENERATIONS = 3000;
 	private static final int MUTATIONS = 20;
-	private double bestfitness = 0;
-	private ArrayList<BreakoutBoard> bestIndividuals = new ArrayList<BreakoutBoard>(10);
+	private double bestfitness = 99259.0;
+	private ArrayList<BreakoutBoard> bestIndividuals;
 
-	public Genetic() {
+	public Genetic() throws IOException {
 		this.population = new ArrayList<>();
+		bestIndividuals = new ArrayList<BreakoutBoard>(10);
 	}
 
 	public ArrayList<BreakoutBoard> getPopulation() {
@@ -160,7 +161,7 @@ public class Genetic {
 				newPopulation.add(parentTwo);
 
 				for (BreakoutBoard br : children) {
-					if (Math.random() <= 0.20)
+					if (Math.random() <= (GENERATIONS - (generation/2)/1000) * 0.30)
 						newPopulation.add(mutate(br, generation));
 					else
 						newPopulation.add(children.get(0));
@@ -172,16 +173,16 @@ public class Genetic {
 	}
 
 	public void write(BreakoutBoard breakoutBoard, int generation) throws IOException {
-		FileWriter writer = new FileWriter(new File("fitness.txt"), true);
-		writer.write("Generation: " + generation + "\ndouble[] values = {"
+		if (breakoutBoard.getFitness() > bestfitness) {
+			FileWriter writer = new FileWriter(new File("fitness.txt"), true);
+			writer.write("Generation: " + generation + "\ndouble[] values = {"
 				+ breakoutBoard.getPredictor().getNetwork().getWeights() + "};\nFitness: " + breakoutBoard.getFitness()
 				+ "\n");
-		if (breakoutBoard.getFitness() > bestfitness) {
 			bestfitness = breakoutBoard.getFitness();
 			bestBreakoutBoards(breakoutBoard);
 			System.out.println(bestfitness + " " + generation);
+			writer.close();
 		}
-		writer.close();
 	}
 
 }
