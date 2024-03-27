@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
 import utils.Commons;
 
 public class Genetic {
 	private ArrayList<BreakoutBoard> population;
 	public static final int DIMPOPULATION = 100;
-	private static final int GENERATIONS = 2000;
+	private static final int GENERATIONS = 3000;
 	private static final int MUTATIONS = 20;
-	private double bestfitness = 0;
+	private double bestfitness = 99259.0;
 	private ArrayList<BreakoutBoard> bestIndividuals = new ArrayList<BreakoutBoard>(10);
+	private FileWriter writer; 
 
 	public Genetic() {
 		this.population = new ArrayList<>();
@@ -32,8 +32,7 @@ public class Genetic {
 
 	public void initPopulation() {
 		for (int pp = 0; pp < DIMPOPULATION; pp++) {
-			BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(
-					Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false, 1);
+			BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE, Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS)), false, 1);
 			population.add(breakoutBoard);
 			breakoutBoard.runSimulation();
 		}
@@ -88,19 +87,13 @@ public class Genetic {
 			}
 		}
 
-		BreakoutBoard childOne = new BreakoutBoard(
-				new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,
-						Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsOne)),
-				false, 1);
+		BreakoutBoard childOne = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsOne)),false, 1);
 		childOne.runSimulation();
-		write(childOne, generation);
+		write(childOne, generation, "cross");
 
-		BreakoutBoard childTwo = new BreakoutBoard(
-				new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,
-						Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsTwo)),
-				false, 1);
+		BreakoutBoard childTwo = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, childrenWeightsTwo)),false, 1);
 		childTwo.runSimulation();
-		write(childTwo, generation);
+		write(childTwo, generation, "cross");
 
 		ArrayList<BreakoutBoard> children = new ArrayList<>();
 		children.add(childOne);
@@ -127,16 +120,15 @@ public class Genetic {
 		ArrayList<Double> weights = inputBoard.getPredictor().getNetwork().getWeights();
 		int length = inputBoard.getPredictor().getNetwork().getWeightsLength();
 		Random random = new Random();
+
 		for (int mutate = 0; mutate < MUTATIONS; mutate++) {
 			int position = (int) (random.nextInt(length));
 			weights.set(position, -1 + (2) * random.nextDouble());
 		}
-		BreakoutBoard breakoutBoard = new BreakoutBoard(
-				new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,
-						Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, weights)),
-				false, 1);
+
+		BreakoutBoard breakoutBoard = new BreakoutBoard(new PredictNextMove(new FeedforwardNeuralNetwork(Commons.BREAKOUT_STATE_SIZE,Commons.BREAKOUT_HIDDEN_DIM, Commons.BREAKOUT_NUM_ACTIONS, weights)),false, 1);
 		breakoutBoard.runSimulation();
-		write(breakoutBoard, generation);
+		write(breakoutBoard, generation, "mutate");
 		return breakoutBoard;
 	}
 
@@ -148,6 +140,8 @@ public class Genetic {
 
 		for (int generation = 0; generation < GENERATIONS; generation++) {
 			ArrayList<BreakoutBoard> newPopulation = new ArrayList<>();
+			if(generation % 100 == 0)
+				System.err.println(generation);
 			for (int best = 0; best < bestIndividuals.size(); best++) {
 				newPopulation.add(bestIndividuals.get(best));
 			}
@@ -160,7 +154,7 @@ public class Genetic {
 				newPopulation.add(parentTwo);
 
 				for (BreakoutBoard br : children) {
-					if (Math.random() <= 0.20)
+					if (Math.random() <= 0.30)
 						newPopulation.add(mutate(br, generation));
 					else
 						newPopulation.add(children.get(0));
@@ -171,17 +165,18 @@ public class Genetic {
 		}
 	}
 
-	public void write(BreakoutBoard breakoutBoard, int generation) throws IOException {
-		FileWriter writer = new FileWriter(new File("fitness.txt"), true);
-		writer.write("Generation: " + generation + "\ndouble[] values = {"
+	public void write(BreakoutBoard breakoutBoard, int generation, String spot) throws IOException {
+		if (breakoutBoard.getFitness() > bestfitness) {
+			writer = new FileWriter(new File("fitness.txt"), true);
+			writer.write("Generation: " + generation + "\ndouble[] values = {"
 				+ breakoutBoard.getPredictor().getNetwork().getWeights() + "};\nFitness: " + breakoutBoard.getFitness()
 				+ "\n");
-		if (breakoutBoard.getFitness() > bestfitness) {
 			bestfitness = breakoutBoard.getFitness();
 			bestBreakoutBoards(breakoutBoard);
-			System.out.println(bestfitness + " " + generation);
+			System.out.println(bestfitness + " " + generation + " " + spot);
+			writer.close();
+
 		}
-		writer.close();
 	}
 
 }
