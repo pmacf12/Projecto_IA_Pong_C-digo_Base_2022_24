@@ -113,7 +113,7 @@ public class BreakoutBoard extends JPanel {
 	}
 
 	public double getFitness() {
-		return kills * 100000 + 100000 - time;
+		return kills * 100000 + 100000 - time + moves * 0.1;
 	}
 
 	private double[] getState() {
