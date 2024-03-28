@@ -1,0 +1,3 @@
+quanto tempo/ gerações se deve treinar ou e admissivel
+standardizar valores?
+tratar outputs

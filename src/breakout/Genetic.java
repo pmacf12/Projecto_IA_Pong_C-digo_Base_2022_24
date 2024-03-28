@@ -15,7 +15,7 @@ public class Genetic {
 	private static final int GENERATIONS = 3000;
 	private static final int MUTATIONS = 20;
 	private double bestfitness = 99259.0;
-	private ArrayList<BreakoutBoard> bestIndividuals = new ArrayList<BreakoutBoard>(10);
+	private ArrayList<BreakoutBoard> bestIndividuals = new ArrayList<BreakoutBoard>(3);
 	private FileWriter writer; 
 
 	public Genetic() {
@@ -51,7 +51,7 @@ public class Genetic {
 	}
 
 	public void bestBreakoutBoards(BreakoutBoard board) {
-		if (bestIndividuals.size() <= 9) {
+		if (bestIndividuals.size() <= 2) {
 			bestIndividuals.add(board);
 		} else {
 			bestIndividuals.remove(bestIndividuals.get(0));

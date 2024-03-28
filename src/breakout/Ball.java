@@ -57,4 +57,9 @@ public class Ball extends Sprite {
     int getYDir() {
         return ydir;
     }
+
+    public int getXDir() {
+        // TODO Auto-generated method stub
+        return xdir;
+    }
 }

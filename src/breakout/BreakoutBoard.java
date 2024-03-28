@@ -128,7 +128,7 @@ public class BreakoutBoard extends JPanel {
 
 		state[5] = bricks[0].getX();
 		state[6] = bricks[0].getY();
-
+		
 		return state;
 	}
 
