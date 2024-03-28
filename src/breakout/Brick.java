@@ -1,4 +1,4 @@
-package breakout;
+package src.breakout;
 
 import javax.swing.ImageIcon;
 

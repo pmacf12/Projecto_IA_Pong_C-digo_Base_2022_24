@@ -1,4 +1,4 @@
-package breakout;
+package src.breakout;
 
 import java.awt.Color;
 import java.awt.Dimension;

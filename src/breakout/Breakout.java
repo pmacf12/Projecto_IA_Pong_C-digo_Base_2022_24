@@ -1,4 +1,4 @@
-package breakout;
+package src.breakout;
 
 import java.io.IOException;
 import java.util.ArrayList;
